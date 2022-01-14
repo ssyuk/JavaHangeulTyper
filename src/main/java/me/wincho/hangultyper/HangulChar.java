@@ -1,0 +1,80 @@
+package me.wincho.hangultyper;
+
+import java.util.List;
+
+public class HangulChar {
+    public final static List<Character> CHO_SEONG = List.of('ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ');
+    public final static List<Character> JUNG_SEONG = List.of('ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ');
+    public final static List<Character> JONG_SEONG = List.of(' ', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ');
+
+    private Integer cho_seong = null;
+    private Integer jung_seong = null;
+    private Integer jong_seong = null;
+    private Character character = null;
+
+    private HangulChar() {
+    }
+
+    public static HangulChar makeHangulCharFromCharacter(char character) {
+        HangulChar hangulChar = new HangulChar();
+        if (character >= 0xAC00 && character <= 0xB00F) {
+            char uniVal = (char) (character - 0xAC00);
+            int cho = (char) (uniVal / 28 / 21);
+            int jung = (char) ((uniVal) / 28 % 21);
+            int jong = (char) (uniVal % 28);
+            hangulChar.cho_seong = (int) CHO_SEONG.get(cho);
+            hangulChar.jung_seong = (int) JUNG_SEONG.get(jung);
+            if (jong == 0) hangulChar.jong_seong = null;
+            else hangulChar.jong_seong = (int) JONG_SEONG.get(jong);
+        } else if (isConsonants(character)) {
+            hangulChar.cho_seong = (int)character;
+        } else {
+            hangulChar.character = character;
+        }
+        return hangulChar;
+    }
+
+    public static boolean isVowels(char c) {
+        int start = 'ㅏ';
+        int end = 'ㅢ';
+        return c >= start && c <= end;
+    }
+
+    public static boolean isConsonants(char c) {
+        int start = 'ㄱ';
+        int end = 'ㅎ';
+        int sStart = 'ㄲ';
+        int sEnd = 'ㅄ';
+        return c >= sStart && c <= sEnd || c >= start && c <= end;
+    }
+
+    public boolean canAppendJungSeong() {
+        return cho_seong != null && jong_seong == null;
+    }
+
+    public void appendJungSeong(int jung_seong) {
+        if (canAppendJungSeong())
+            this.jung_seong = jung_seong;
+    }
+
+    public boolean canAppendJongSeong() {
+        return cho_seong != null && jung_seong != null && jong_seong == null;
+    }
+
+    public void appendJongSeong(int jong_seong) {
+        if (canAppendJongSeong())
+            this.jong_seong = jong_seong;
+    }
+
+    @SuppressWarnings({"ConstantConditions", "PointlessArithmeticExpression"})
+    public char buildChar() {
+        if (cho_seong != null && jung_seong == null && jong_seong == null) {
+            return (char) (cho_seong + 0);
+        } else if (cho_seong != null && jung_seong != null && jong_seong == null) {
+            return (char) ((CHO_SEONG.indexOf((char) (cho_seong + 0)) * 21 + JUNG_SEONG.indexOf((char) (jung_seong + 0))) * 28 + 0xAC00);
+        } else if (cho_seong != null && jung_seong != null && jong_seong != null) {
+            return (char) ((CHO_SEONG.indexOf((char) (cho_seong + 0)) * 21 + JUNG_SEONG.indexOf((char) (jung_seong + 0))) * 28 + JONG_SEONG.indexOf((char) (jong_seong + 0)) + 0xAC00);
+        }
+        return character;
+    }
+}
