@@ -39,7 +39,32 @@ public class Main {
         engKorMap.put('x', 'ㅌ');
         engKorMap.put('y', 'ㅛ');
         engKorMap.put('z', 'ㅋ');
-        engKorMap.put('\b', '\b');
+        engKorMap.put("a".toUpperCase().charAt(0), 'ㅁ');
+        engKorMap.put("b".toUpperCase().charAt(0), 'ㅠ');
+        engKorMap.put("c".toUpperCase().charAt(0), 'ㅊ');
+        engKorMap.put("d".toUpperCase().charAt(0), 'ㅇ');
+        engKorMap.put("e".toUpperCase().charAt(0), 'ㄸ');
+        engKorMap.put("f".toUpperCase().charAt(0), 'ㄹ');
+        engKorMap.put("g".toUpperCase().charAt(0), 'ㅎ');
+        engKorMap.put("h".toUpperCase().charAt(0), 'ㅗ');
+        engKorMap.put("i".toUpperCase().charAt(0), 'ㅑ');
+        engKorMap.put("j".toUpperCase().charAt(0), 'ㅓ');
+        engKorMap.put("k".toUpperCase().charAt(0), 'ㅏ');
+        engKorMap.put("l".toUpperCase().charAt(0), 'ㅣ');
+        engKorMap.put("m".toUpperCase().charAt(0), 'ㅡ');
+        engKorMap.put("n".toUpperCase().charAt(0), 'ㅜ');
+        engKorMap.put("o".toUpperCase().charAt(0), 'ㅒ');
+        engKorMap.put("p".toUpperCase().charAt(0), 'ㅖ');
+        engKorMap.put("q".toUpperCase().charAt(0), 'ㅃ');
+        engKorMap.put("r".toUpperCase().charAt(0), 'ㄲ');
+        engKorMap.put("s".toUpperCase().charAt(0), 'ㄴ');
+        engKorMap.put("t".toUpperCase().charAt(0), 'ㅆ');
+        engKorMap.put("u".toUpperCase().charAt(0), 'ㅕ');
+        engKorMap.put("v".toUpperCase().charAt(0), 'ㅍ');
+        engKorMap.put("w".toUpperCase().charAt(0), 'ㅉ');
+        engKorMap.put("x".toUpperCase().charAt(0), 'ㅌ');
+        engKorMap.put("y".toUpperCase().charAt(0), 'ㅛ');
+        engKorMap.put("z".toUpperCase().charAt(0), 'ㅋ');
 
         HangulText text = new HangulText("ㄱ");
         JFrame frame = new JFrame();
@@ -51,7 +76,7 @@ public class Main {
         frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                text.append(engKorMap.get(e.getKeyChar()));
+                text.append(engKorMap.containsKey(e.getKeyChar()) ? engKorMap.get(e.getKeyChar()) : e.getKeyChar());
                 label.setText(text.toString());
             }
         });

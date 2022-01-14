@@ -36,7 +36,7 @@ public class HangulChar {
 
     public static boolean isVowels(char c) {
         int start = 'ㅏ';
-        int end = 'ㅢ';
+        int end = 'ㅣ';
         return c >= start && c <= end;
     }
 

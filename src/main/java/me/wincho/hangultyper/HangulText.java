@@ -16,6 +16,7 @@ public class HangulText {
         if (c == '\b') {
             if (chars.size() != 0)
                 chars.remove(chars.size() - 1);
+            return;
         }
         if (c == '\n') chars.add(HangulChar.makeHangulCharFromCharacter('\n'));
         HangulChar hChar = null;
@@ -34,6 +35,8 @@ public class HangulText {
             } else {
                 chars.add(HangulChar.makeHangulCharFromCharacter(c));
             }
+        } else {
+            chars.add(HangulChar.makeHangulCharFromCharacter(c));
         }
     }
 
