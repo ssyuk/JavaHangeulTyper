@@ -49,6 +49,7 @@ public class HangulChar {
     }
 
     public boolean canAppendJungSeong(int jungSeong) {
+        if (jong_seong != null) return false;
         if (jung_seong != null) {
             if (jung_seong == 'ㅗ') {
                 if (jungSeong == 'ㅏ') {
@@ -69,7 +70,7 @@ public class HangulChar {
                 }
             }
         }
-        return cho_seong != null && jong_seong == null;
+        return cho_seong != null;
     }
 
     public void appendJungSeong(int jungSeong) {
