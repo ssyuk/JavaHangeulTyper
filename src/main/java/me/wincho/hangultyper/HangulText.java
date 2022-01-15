@@ -32,12 +32,13 @@ public class HangulText {
             if (hChar != null && hChar.canAppendJungSeong(c)) {
                 hChar.appendJungSeong(c);
                 chars.set(chars.size() - 1, hChar);
-            } else if (hChar != null && chars.get(chars.size() - 1).hasJongSeong()) {
-                int jong = chars.get(chars.size() - 1).getJongSeongAndRemove();
-                HangulChar hChar2 = HangulChar.makeHangulCharFromCharacter(' ');
-                hChar2.setChoSeong(jong);
-                hChar2.appendJungSeong(c);
-                chars.add(hChar2);
+            } else if (hChar != null && hChar.hasJongSeong()) {
+                int jong = hChar.getJongSeongAndRemove();
+
+                HangulChar newChar = HangulChar.makeHangulCharFromCharacter(' ');
+                newChar.setChoSeong(jong);
+                newChar.appendJungSeong(c);
+                chars.add(newChar);
             } else {
                 chars.add(HangulChar.makeHangulCharFromCharacter(c));
             }
