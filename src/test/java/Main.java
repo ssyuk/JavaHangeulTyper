@@ -1,16 +1,25 @@
 import me.wincho.hangultyper.HangulText;
 
+import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 public class Main {
     private static final Map<Character, Character> engKorMap = new HashMap<>();
+    private static final HangulText text = new HangulText("");
+    private static boolean running = true;
+    private static int frames = 0;
 
     public static void main(String[] args) {
         engKorMap.put('a', 'ㅁ');
@@ -66,19 +75,87 @@ public class Main {
         engKorMap.put("y".toUpperCase().charAt(0), 'ㅛ');
         engKorMap.put("z".toUpperCase().charAt(0), 'ㅋ');
 
-        HangulText text = new HangulText("ㄱ");
         JFrame frame = new JFrame();
-        JLabel label = new JLabel(text.toString());
-        label.setFont(new Font(Font.SERIF, Font.BOLD, 100));
+        Canvas canvas = new Canvas();
+        frame.add(canvas);
         frame.setSize(1000, 800);
-        frame.add(label);
         frame.setVisible(true);
-        frame.addKeyListener(new KeyAdapter() {
+        canvas.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
                 text.append(engKorMap.containsKey(e.getKeyChar()) ? engKorMap.get(e.getKeyChar()) : e.getKeyChar());
-                label.setText(text.toString());
             }
         });
+
+        new Thread(() -> {
+            while (running) {
+                Graphics graphics = canvas.getGraphics();
+
+                long lastTime = System.nanoTime();
+                long lastRender = System.nanoTime();
+                double unprocessed = 0;
+                int frames = 0;
+                int ticks = 0;
+                long lastTimer1 = System.currentTimeMillis();
+                while (true) {
+                    long now = System.nanoTime();
+                    double nsPerTick = 1E9D / 60/*TPS*/;
+                    unprocessed += (now - lastTime) / nsPerTick;
+                    lastTime = now;
+                    while (unprocessed >= 1) {
+                        ticks++;
+                        try {
+//                            update();
+                            Main.frames++;
+                        } catch (Throwable e) {
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "An error occurred while updating: " + e.getClass().getName() + ": " + e.getMessage());
+                            System.exit(1);
+                        }
+                        unprocessed--;
+                    }
+
+                    if ((now - lastRender) / 1.0E9 > 1.0 / 60/*FPS*/) {
+                        frames++;
+                        lastRender = System.nanoTime();
+
+                        // Start Render
+                        try {
+                            render(graphics, canvas.getWidth(), canvas.getHeight());
+                        } catch (Throwable e) {
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "An error occurred while rendering: " + e.getClass().getName() + ": " + e.getMessage());
+                            System.exit(1);
+                        }
+                        // End Render
+                    }
+
+                    if (System.currentTimeMillis() - lastTimer1 > 1000) {
+                        lastTimer1 += 1000;
+
+                        System.out.printf("%d FPS %d TPS%n", frames, ticks);
+
+                        frames = 0;
+                        ticks = 0;
+                    }
+                }
+            }
+        }, "Render Thread").start();
+    }
+
+    public static void render(Graphics graphics, int width, int height) {
+        int y = 0;
+        int lastX = 0;
+        graphics.setColor(Color.WHITE);
+        graphics.fillRect(0, 0, width, height);
+
+        graphics.setColor(Color.BLACK);
+        graphics.setFont(new Font(Font.SERIF, Font.BOLD, 50));
+        for (String s : text.toString().split("\n")) {
+            graphics.drawString(s, 10, y += graphics.getFontMetrics().getHeight());
+            lastX = graphics.getFontMetrics().stringWidth(s);
+        }
+        if (frames % 60 < 30)
+            graphics.fillRect(lastX + 10, y - graphics.getFontMetrics().getHeight() + 15, 5, graphics.getFontMetrics().getHeight() - 5);
     }
 }
