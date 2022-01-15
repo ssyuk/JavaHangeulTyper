@@ -50,7 +50,7 @@ public class HangulText {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (HangulChar aChar : chars) {
+        for (HangulChar aChar : new ArrayList<>(chars)) {
             builder.append(aChar.buildChar());
         }
         return builder.toString();
