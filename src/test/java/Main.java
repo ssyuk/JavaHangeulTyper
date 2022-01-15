@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 
 public class Main {
     private static final Map<Character, Character> engKorMap = new HashMap<>();
-    private static final HangulText text = new HangulText("");
+    private static final HangulText text = new HangulText("추운 겨울에는 따뜻한 커피와 티를 마셔야지요");
     private static boolean running = true;
     private static int frames = 0;
 
@@ -78,7 +78,7 @@ public class Main {
         JFrame frame = new JFrame();
         Canvas canvas = new Canvas();
         frame.add(canvas);
-        frame.setSize(1000, 800);
+        frame.setSize(1300, 750);
         frame.setVisible(true);
         canvas.addKeyListener(new KeyAdapter() {
             @Override
