@@ -29,9 +29,15 @@ public class HangulText {
                 chars.add(HangulChar.makeHangulCharFromCharacter(c));
             }
         } else if (HangulChar.isVowels(c)) {
-            if (hChar != null && hChar.canAppendJungSeong()) {
+            if (hChar != null && hChar.canAppendJungSeong(c)) {
                 hChar.appendJungSeong(c);
                 chars.set(chars.size() - 1, hChar);
+            } else if (hChar != null && chars.get(chars.size() - 1).hasJongSeong()) {
+                int jong = chars.get(chars.size() - 1).getJongSeongAndRemove();
+                HangulChar hChar2 = HangulChar.makeHangulCharFromCharacter(' ');
+                hChar2.setChoSeong(jong);
+                hChar2.appendJungSeong(c);
+                chars.add(hChar2);
             } else {
                 chars.add(HangulChar.makeHangulCharFromCharacter(c));
             }

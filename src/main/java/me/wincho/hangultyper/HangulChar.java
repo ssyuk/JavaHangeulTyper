@@ -27,7 +27,7 @@ public class HangulChar {
             if (jong == 0) hangulChar.jong_seong = null;
             else hangulChar.jong_seong = (int) JONG_SEONG.get(jong);
         } else if (isConsonants(character)) {
-            hangulChar.cho_seong = (int)character;
+            hangulChar.cho_seong = (int) character;
         } else {
             hangulChar.character = character;
         }
@@ -48,13 +48,52 @@ public class HangulChar {
         return c >= sStart && c <= sEnd || c >= start && c <= end;
     }
 
-    public boolean canAppendJungSeong() {
+    public boolean canAppendJungSeong(int jungSeong) {
+        if (jung_seong != null) {
+            if (jung_seong == 'ㅗ') {
+                if (jungSeong == 'ㅏ') {
+                    return true;
+                } else if (jungSeong == 'ㅐ') {
+                    return true;
+                } else if (jungSeong == 'ㅣ') {
+                    return true;
+                }
+            }
+            if (jung_seong == 'ㅜ') {
+                if (jungSeong == 'ㅓ') {
+                    return true;
+                } else if (jungSeong == 'ㅔ') {
+                    return true;
+                } else if (jungSeong == 'ㅣ') {
+                    return true;
+                }
+            }
+        }
         return cho_seong != null && jong_seong == null;
     }
 
-    public void appendJungSeong(int jung_seong) {
-        if (canAppendJungSeong())
-            this.jung_seong = jung_seong;
+    public void appendJungSeong(int jungSeong) {
+        if (canAppendJungSeong(jungSeong)) {
+            if (jung_seong != null && jung_seong == 'ㅗ') {
+                if (jungSeong == 'ㅏ') {
+                    this.jung_seong = (int) 'ㅘ';
+                } else if (jungSeong == 'ㅐ') {
+                    this.jung_seong = (int) 'ㅙ';
+                } else if (jungSeong == 'ㅣ') {
+                    this.jung_seong = (int) 'ㅟ';
+                }
+            } else if (jung_seong != null && jung_seong == 'ㅜ') {
+                if (jungSeong == 'ㅓ') {
+                    this.jung_seong = (int) 'ㅝ';
+                } else if (jungSeong == 'ㅔ') {
+                    this.jung_seong = (int) 'ㅞ';
+                } else if (jungSeong == 'ㅣ') {
+                    this.jung_seong = (int) 'ㅟ';
+                }
+            } else {
+                this.jung_seong = jungSeong;
+            }
+        }
     }
 
     public boolean canAppendJongSeong() {
@@ -64,6 +103,12 @@ public class HangulChar {
     public void appendJongSeong(int jong_seong) {
         if (canAppendJongSeong())
             this.jong_seong = jong_seong;
+    }
+
+    public int getJongSeongAndRemove() {
+        int jong = jong_seong;
+        jong_seong = null;
+        return jong;
     }
 
     @SuppressWarnings({"ConstantConditions", "PointlessArithmeticExpression"})
@@ -76,5 +121,13 @@ public class HangulChar {
             return (char) ((CHO_SEONG.indexOf((char) (cho_seong + 0)) * 21 + JUNG_SEONG.indexOf((char) (jung_seong + 0))) * 28 + JONG_SEONG.indexOf((char) (jong_seong + 0)) + 0xAC00);
         }
         return character;
+    }
+
+    public boolean hasJongSeong() {
+        return jong_seong != null;
+    }
+
+    public void setChoSeong(int cho) {
+        cho_seong = cho;
     }
 }
