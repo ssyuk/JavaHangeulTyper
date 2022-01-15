@@ -80,7 +80,7 @@ public class HangulChar {
                 } else if (jungSeong == 'ㅐ') {
                     this.jung_seong = (int) 'ㅙ';
                 } else if (jungSeong == 'ㅣ') {
-                    this.jung_seong = (int) 'ㅟ';
+                    this.jung_seong = (int) 'ㅚ';
                 }
             } else if (jung_seong != null && jung_seong == 'ㅜ') {
                 if (jungSeong == 'ㅓ') {
